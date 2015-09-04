@@ -28,7 +28,59 @@ function getDetectedUnixtime(text) {
     return Promise.reject(null);
 }
 /// <reference path="../../typings/es6-promise/es6-promise.d.ts" />
-var API_KEY = "putkeyhere";
+function promiseMap(promise, callback) {
+    return new Promise(function (resolve, reject) {
+        promise.then(function (value) {
+            resolve(callback(value));
+        }, reject);
+    });
+}
+function getResolvedPromises(promises) {
+    return new Promise(function (resolve, reject) {
+        var resolved = [];
+        var completed = 0;
+        var total = promises.length;
+        function checkComplete() {
+            completed++;
+            if (completed == total) {
+                resolve(resolved);
+            }
+        }
+        promises.map(function (promise) {
+            promise.then(function (value) {
+                resolved.push(value);
+                checkComplete();
+            }, checkComplete);
+        });
+    });
+}
+function positiveRace(promises) {
+    return new Promise(function (resolve, reject) {
+        var resolved = [];
+        var completed = 0;
+        var total = promises.length;
+        var isCompleted = false;
+        function checkComplete() {
+            completed++;
+            if (completed == total && !isCompleted) {
+                reject();
+            }
+        }
+        function complete(value) {
+            if (!isCompleted) {
+                resolve(value);
+                isCompleted = true;
+            }
+            checkComplete();
+        }
+        promises.map(function (promise) {
+            promise.then(complete, checkComplete);
+        });
+    });
+}
+/// <reference path="../../typings/es6-promise/es6-promise.d.ts" />
+/// <reference path="../utils/promise.ts" />
+var API_KEY = "rugalt6554";
 var API_URL = "http://catalog.api.2gis.ru";
 var Filial = (function () {
     function Filial(id, name) {
@@ -49,13 +101,6 @@ function isLikeFilialId(n) {
 }
 function isLikeRubricId(n) {
     return isLikeFilialId(n);
-}
-function promiseMap(promise, callback) {
-    return new Promise(function (resolve, reject) {
-        promise.then(function (value) {
-            resolve(callback(value));
-        }, reject);
-    });
 }
 function buildParamString(params) {
     return Object.keys(params).map(function (key) { return (key + "=" + params[key]); }).join('&');
@@ -119,7 +164,7 @@ function getTwoGisFilial(text) {
             return "Filial: " + filial.name;
         });
     }
-    return Promise.reject(null);
+    return Promise.reject("is not filial");
 }
 function getTwoGisRubric(text) {
     var rubricId = Number(text);
@@ -128,7 +173,10 @@ function getTwoGisRubric(text) {
             return "Rubric: " + rubric.name;
         });
     }
-    return Promise.reject(null);
+    return Promise.reject("is not rubric");
+}
+function getTwoGisObject(text) {
+    return positiveRace([getTwoGisFilial(text), getTwoGisRubric(text)]);
 }
 var TipManager = (function () {
     function TipManager(id) {
@@ -165,34 +213,14 @@ var TipManager = (function () {
     };
     return TipManager;
 })();
-// / < rseference path="../typings/chrome/chrome.d.ts"/>
 /// <reference path="../typings/es6-promise/es6-promise.d.ts" />
 /// <reference path="handlers/unixtime.ts" />
 /// <reference path="handlers/twogis.ts" />
+/// <reference path="utils/promise.ts" />
 /// <reference path="tipManager.ts" />
-function getResolvedPromises(promises) {
-    return new Promise(function (resolve, reject) {
-        var resolved = [];
-        var completed = 0;
-        var total = promises.length;
-        function checkComplete() {
-            completed++;
-            if (completed == total) {
-                resolve(resolved);
-            }
-        }
-        promises.map(function (promise) {
-            promise.then(function (value) {
-                resolved.push(value);
-                checkComplete();
-            }, checkComplete);
-        });
-    });
-}
 var handlers = [
     getDetectedUnixtime,
-    getTwoGisFilial,
-    getTwoGisRubric
+    getTwoGisObject
 ];
 var tipManager = new TipManager("__chrome_extension_webapi_tools_tip");
 function onSelectionChange() {

@@ -1,4 +1,5 @@
 /// <reference path="../../typings/es6-promise/es6-promise.d.ts" />
+/// <reference path="../utils/promise.ts" />
 
 const API_KEY = "putkeyhere";
 const API_URL = "http://catalog.api.2gis.ru";
@@ -29,17 +30,6 @@ function isLikeFilialId(n: number) {
 
 function isLikeRubricId(n: number) {
 	return isLikeFilialId(n);
-}
-
-function promiseMap<A, B>(promise: Promise<A>, callback: (A) => B): Promise<B> {
-	return new Promise<B>((resolve, reject) => {
-		promise.then(
-			(value) => {
-				resolve(callback(value));
-			},
-			reject
-		);
-	});
 }
 
 function buildParamString(params: any) {
@@ -88,7 +78,7 @@ function branchGet(id): Promise<Filial> {
 }
 
 function rubricGet(id): Promise<Rubric> {
-	return new Promise<Filial>((resolve, reject) => {
+	return new Promise<Rubric>((resolve, reject) => {
 		callTwoGisAPI("catalog/rubric/get", {id: id})
 			.then((resp) => {
 				if (resp.result.total > 0) {
@@ -104,25 +94,29 @@ function rubricGet(id): Promise<Rubric> {
 function getTwoGisFilial(text: string): Promise<string> {
 	var filialId = Number(text);
 	if (!isNaN(filialId) && isLikeFilialId(filialId)) {
-		return promiseMap<Filial, string>(
+		return promiseMap(
 			branchGet(filialId), 
 			(filial: Filial) => {
 				return `Filial: ${filial.name}`;
 			}
 		);
 	}
-	return Promise.reject(null);
+	return Promise.reject("is not filial");
 }
 
 function getTwoGisRubric(text: string): Promise<string> {
 	var rubricId = Number(text);
 	if (!isNaN(rubricId) && isLikeRubricId(rubricId)) {
-		return promiseMap<Rubric, string>(
+		return promiseMap(
 			rubricGet(rubricId), 
 			(rubric: Rubric) => {
 				return `Rubric: ${rubric.name}`;
 			}
 		);
 	}
-	return Promise.reject(null);
+	return Promise.reject("is not rubric");
+}
+
+function getTwoGisObject(text: string) {
+	return positiveRace([getTwoGisFilial(text), getTwoGisRubric(text)]);
 }

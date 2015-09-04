@@ -1,39 +1,13 @@
-// / < rseference path="../typings/chrome/chrome.d.ts"/>
-
 /// <reference path="../typings/es6-promise/es6-promise.d.ts" />
 
 /// <reference path="handlers/unixtime.ts" />
 /// <reference path="handlers/twogis.ts" />
+/// <reference path="utils/promise.ts" />
 /// <reference path="tipManager.ts" />
-
-
-function getResolvedPromises<T>(promises: Promise<T>[]) {
-	return new Promise<T[]>((resolve, reject) => {
-		var resolved: T[] = [];
-		
-		var completed = 0;
-		var total = promises.length;
-		function checkComplete() {
-			completed++;
-			if (completed == total) {
-				resolve(resolved);
-			}
-		}
-		
-		promises.map((promise) => {
-			promise.then((value) => {
-				resolved.push(value);
-				checkComplete();
-			}, checkComplete)
-		})
-	})
-}
-
 
 var handlers: Array<(text: string) => Promise<string>> = [
 	getDetectedUnixtime,
-	getTwoGisFilial,
-	getTwoGisRubric
+	getTwoGisObject
 ];
 
 var tipManager = new TipManager("__chrome_extension_webapi_tools_tip");
