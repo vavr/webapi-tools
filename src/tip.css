@@ -1,0 +1,10 @@
+#__chrome_extension_webapi_tools_tip {
+	position: absolute;
+	z-index: 9999999;
+	background-color: white;
+	border: 1px solid slategray;
+    font-family: monospace;
+	border-radius: 3px;
+	padding: 5px;
+	display: none;
+}
