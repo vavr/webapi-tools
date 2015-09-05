@@ -5,9 +5,11 @@ var source = require('vinyl-source-stream');
 var browserify = require('browserify');
 var tsify = require('tsify');
 
-var gulpIf = require('gulp-if');
 var gulpReplace = require('gulp-replace');
 
+function gulpIf(stream, condition, task) {
+    return condition ? stream.pipe(task) : stream;
+}
 
 gulp.task('default', function() {
     var dgisApiKey = argv["dgis-key"];
@@ -16,8 +18,8 @@ gulp.task('default', function() {
         .add('main.ts')
         .plugin(tsify);
 
-    return bundler.bundle()
-        .pipe(source('main.js'))
-        .pipe(gulpIf(dgisApiKey, gulpReplace('2GIS_API_KEY', dgisApiKey)))
+    var stream = bundler.bundle().pipe(source('main.js'));
+    
+    return gulpIf(stream, dgisApiKey, gulpReplace('2GIS_API_KEY', dgisApiKey))
         .pipe(gulp.dest('./build'));
 });

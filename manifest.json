@@ -9,7 +9,7 @@
     {
       "matches": ["<all_urls>"],
       "js": ["build/main.js"],
-      "css": ["src/tip.css"],
+      "css": ["static/tip.css"],
       "all_frames": true
     }
   ],
@@ -17,5 +17,9 @@
   "permissions": [
     "activeTab",
     "<all_urls>"
+  ],
+  
+  "web_accessible_resources": [
+    "static/*"
   ]
 }

@@ -1,25 +1,22 @@
 {
   "name": "webapi-tools",
-  "version": "1.0.0",
-  "dependencies": {
-    "browserify": "^11.0.1",
-    "gulp-browserify": "^0.5.1",
-    "moment": "2.8.*",
-    "tsify": "^0.11.11",
-    "vinyl-source-stream": "^1.1.0",
-    "yargs": "^3.24.0"
-  },
+  "version": "1.1.0",
   "devDependencies": {
+    "browserify": "^11.0.1",
     "gulp": "^3.8.11",
+    "gulp-browserify": "^0.5.1",
     "gulp-commonjs": "^0.1.0",
     "gulp-debug": "^2.1.0",
     "gulp-filter": "^3.0.1",
-    "gulp-if": "^1.2.5",
     "gulp-inject": "^1.2.0",
     "gulp-replace": "^0.5.4",
     "gulp-rimraf": "^0.1.1",
     "gulp-sourcemaps": "^1.5.1",
     "gulp-tslint": "^1.4.4",
-    "gulp-typescript": "^2.5.0"
+    "gulp-typescript": "^2.5.0",
+    "moment": "2.8.*",
+    "tsify": "^0.11.11",
+    "vinyl-source-stream": "^1.1.0",
+    "yargs": "^3.24.0"
   }
 }

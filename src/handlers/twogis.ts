@@ -1,32 +1,66 @@
 /// <reference path="../../typings/es6-promise/es6-promise.d.ts" />
-/// <reference path="../utils/promise.ts" />
 
 import pu = require('../utils/promise');
+import ui = require('../ui/helper');
 
-const API_KEY = "2GIS_API_KEY";
+const API_KEY = "2GIS_API_KEY"; // replaced by gulp
 const API_URL = "http://catalog.api.2gis.ru";
 
-if (API_KEY == "nospecified") {
+if (API_KEY == "2GIS" + "_API_KEY") {
 	console.error("2GIS api key not specified");
 }
 
-class Filial {
+class Entity {
 	id: string;
-	name: string;
+	apiLink: string;
 	
-	constructor(id: string, name: string) {
+	constructor(id: string, apiLink: string) {
 		this.id = id;
-		this.name = name;
+		this.apiLink = apiLink;
+	}
+	
+	getExternalLinkHtml() {
+		return ui.getExternalLinkCode(this.apiLink);
 	}
 }
 
-class Rubric {
-	id: string;
+class Filial extends Entity {
 	name: string;
+	projectId: number;
 	
-	constructor(id: string, name: string) {
-		this.id = id;
+	constructor(id: string, name: string, projectId: number, apiLink: string) {
+		super(id, apiLink);
 		this.name = name;
+		this.projectId = projectId;
+	}
+	
+	toString() {
+		return `${this.name}, pj. ${this.projectId} ${this.getExternalLinkHtml()}`;
+	}
+}
+
+class Rubric extends Entity {
+	name: string;
+	projectId: number;
+	
+	constructor(id: string, name: string, projectId: number, apiLink: string) {
+		super(id, apiLink);
+		this.name = name;
+		this.projectId = projectId;
+	}
+	
+	toString() {
+		return `${this.name}, pj. ${this.projectId} ${this.getExternalLinkHtml()}`;
+	}
+}
+
+class ApiResult {
+	url: string;
+	data: any;
+	
+	constructor(url: string, data: any) {
+		this.url = url;
+		this.data = data;
 	}
 }
 
@@ -42,11 +76,13 @@ function buildParamString(params: any) {
 	return Object.keys(params).map((key) => `${key}=${params[key]}`).join('&');
 }
 
-function callTwoGisAPI(method: string, params: any): Promise<any> {
-	return new Promise<Filial>((resolve, reject) => {
+function callTwoGisAPI(method: string, params: any): Promise<ApiResult> {
+	return new Promise<ApiResult>((resolve, reject) => {
+		params.key = API_KEY;
+		var requestUrl = `${API_URL}/2.0/${method}?key=${API_KEY}&${buildParamString(params)}`
 		var xhr = new XMLHttpRequest();
 		xhr.open('GET',
-			`${API_URL}/2.0/${method}?key=${API_KEY}&${buildParamString(params)}`,
+			`${API_URL}/2.0/${method}?${buildParamString(params)}`,
 			true
 		);
 		xhr.onreadystatechange = (ev) => {
@@ -55,7 +91,7 @@ function callTwoGisAPI(method: string, params: any): Promise<any> {
 					try {
 						var resp = JSON.parse(xhr.responseText);
 						if (resp.meta.code == 200) {
-							resolve(resp);
+							resolve(new ApiResult(requestUrl, resp));
 							return;
 						}
 					} catch (err) {
@@ -71,11 +107,11 @@ function callTwoGisAPI(method: string, params: any): Promise<any> {
 
 function branchGet(id: string): Promise<Filial> {
 	return new Promise<Filial>((resolve, reject) => {
-		callTwoGisAPI("catalog/branch/get", {id: id})
+		callTwoGisAPI("catalog/branch/get", {id: id, fields: 'items.region_id'})
 			.then((resp) => {
-				if (resp.result.total > 0) {
-					var filial = resp.result.items[0];
-					resolve(new Filial(filial.id, filial.name));
+				if (resp.data.result.total > 0) {
+					var filial = resp.data.result.items[0];
+					resolve(new Filial(filial.id, filial.name, filial.region_id, resp.url));
 				} else {
 					reject();
 				}
@@ -85,11 +121,11 @@ function branchGet(id: string): Promise<Filial> {
 
 function rubricGet(id: string): Promise<Rubric> {
 	return new Promise<Rubric>((resolve, reject) => {
-		callTwoGisAPI("catalog/rubric/get", {id: id})
+		callTwoGisAPI("catalog/rubric/get", {id: id, fields: '*'})
 			.then((resp) => {
-				if (resp.result.total > 0) {
-					var rubric = resp.result.items[0];
-					resolve(new Rubric(rubric.id, rubric.name));
+				if (resp.data.result.total > 0) {
+					var rubric = resp.data.result.items[0];
+					resolve(new Rubric(rubric.id, rubric.name, rubric.region_id, resp.url));
 				} else {
 					reject();
 				}
@@ -102,7 +138,7 @@ function getTwoGisFilial(text: string): Promise<string> {
 	if (!isNaN(filialId) && isLikeFilialId(filialId)) {
 		return pu.promiseMap(
 			branchGet(filialId.toString()), 
-			(filial: Filial) => `Filial: ${filial.name}`
+			(filial: Filial) => `Filial: ${filial}`
 		);
 	}
 	return Promise.reject<string>(new Error("is not filial"));
@@ -113,7 +149,7 @@ function getTwoGisRubric(text: string): Promise<string> {
 	if (!isNaN(rubricId) && isLikeRubricId(rubricId)) {
 		return pu.promiseMap(
 			rubricGet(rubricId.toString()), 
-			(rubric: Rubric) => `Rubric: ${rubric.name}`
+			(rubric: Rubric) => `Rubric: ${rubric}`
 		);
 	}
 	return Promise.reject<string>(new Error("is not rubric"));
