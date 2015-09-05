@@ -1,6 +1,6 @@
 /// <reference path="../../typings/es6-promise/es6-promise.d.ts" />
 
-function promiseMap<A, B>(promise: Promise<A>, callback: (A) => B): Promise<B> {
+export function promiseMap<A, B>(promise: Promise<A>, callback: (x: A) => B): Promise<B> {
 	return new Promise<B>((resolve, reject) => {
 		promise.then(
 			(value) => {
@@ -12,7 +12,7 @@ function promiseMap<A, B>(promise: Promise<A>, callback: (A) => B): Promise<B> {
 }
 
 
-function getResolvedPromises<T>(promises: Promise<T>[]) {
+export function getResolvedPromises<T>(promises: Promise<T>[]) {
 	return new Promise<T[]>((resolve, reject) => {
 		var resolved: T[] = [];
 		
@@ -34,7 +34,7 @@ function getResolvedPromises<T>(promises: Promise<T>[]) {
 	})
 }
 
-function positiveRace<T>(promises: Promise<T>[]) {
+export function positiveRace<T>(promises: Promise<T>[]) {
 	return new Promise<T>((resolve, reject) => {
 		
 		var resolved: T[] = [];
@@ -49,7 +49,7 @@ function positiveRace<T>(promises: Promise<T>[]) {
 				reject();
 			}
 		}
-		function complete(value) {
+		function complete(value: T) {
 			if (!isCompleted) {
 				resolve(value);
 				isCompleted = true;

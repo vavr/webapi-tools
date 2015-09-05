@@ -1,8 +1,14 @@
 /// <reference path="../../typings/es6-promise/es6-promise.d.ts" />
 /// <reference path="../utils/promise.ts" />
 
-const API_KEY = "putkeyhere";
+import pu = require('../utils/promise');
+
+const API_KEY = "rugalt6554";
 const API_URL = "http://catalog.api.2gis.ru";
+
+if (API_KEY == "nospecified") {
+	console.error("2GIS api key not specified");
+}
 
 class Filial {
 	id: string;
@@ -36,7 +42,7 @@ function buildParamString(params: any) {
 	return Object.keys(params).map((key) => `${key}=${params[key]}`).join('&');
 }
 
-function callTwoGisAPI(method, params: any): Promise<any> {
+function callTwoGisAPI(method: string, params: any): Promise<any> {
 	return new Promise<Filial>((resolve, reject) => {
 		var xhr = new XMLHttpRequest();
 		xhr.open('GET',
@@ -63,7 +69,7 @@ function callTwoGisAPI(method, params: any): Promise<any> {
 	})
 }
 
-function branchGet(id): Promise<Filial> {
+function branchGet(id: string): Promise<Filial> {
 	return new Promise<Filial>((resolve, reject) => {
 		callTwoGisAPI("catalog/branch/get", {id: id})
 			.then((resp) => {
@@ -77,7 +83,7 @@ function branchGet(id): Promise<Filial> {
 	})
 }
 
-function rubricGet(id): Promise<Rubric> {
+function rubricGet(id: string): Promise<Rubric> {
 	return new Promise<Rubric>((resolve, reject) => {
 		callTwoGisAPI("catalog/rubric/get", {id: id})
 			.then((resp) => {
@@ -94,29 +100,27 @@ function rubricGet(id): Promise<Rubric> {
 function getTwoGisFilial(text: string): Promise<string> {
 	var filialId = Number(text);
 	if (!isNaN(filialId) && isLikeFilialId(filialId)) {
-		return promiseMap(
-			branchGet(filialId), 
-			(filial: Filial) => {
-				return `Filial: ${filial.name}`;
-			}
+		return pu.promiseMap(
+			branchGet(filialId.toString()), 
+			(filial: Filial) => `Filial: ${filial.name}`
 		);
 	}
-	return Promise.reject("is not filial");
+	return Promise.reject<string>(new Error("is not filial"));
 }
 
 function getTwoGisRubric(text: string): Promise<string> {
 	var rubricId = Number(text);
 	if (!isNaN(rubricId) && isLikeRubricId(rubricId)) {
-		return promiseMap(
-			rubricGet(rubricId), 
-			(rubric: Rubric) => {
-				return `Rubric: ${rubric.name}`;
-			}
+		return pu.promiseMap(
+			rubricGet(rubricId.toString()), 
+			(rubric: Rubric) => `Rubric: ${rubric.name}`
 		);
 	}
-	return Promise.reject("is not rubric");
+	return Promise.reject<string>(new Error("is not rubric"));
 }
 
 function getTwoGisObject(text: string) {
-	return positiveRace([getTwoGisFilial(text), getTwoGisRubric(text)]);
+	return pu.positiveRace([getTwoGisFilial(text), getTwoGisRubric(text)]);
 }
+
+export = getTwoGisObject;

@@ -1,23 +1,25 @@
 /// <reference path="../../typings/es6-promise/es6-promise.d.ts" />
+/// <reference path="../../typings/moment/moment.d.ts" />
+
+import moment = require('moment');
 
 var minDate = (new Date(2000, 1, 1, 0, 0, 0, 0)).valueOf();
-var maxDate = 0xFFFFFFFF * 1000;
+var maxDate = (new Date(2030, 1, 1, 0, 0, 0, 0)).valueOf();
 
 function isCorrectUnixtimeMs(x: number) {
 	return x > minDate && x < maxDate;
 }
 
 function renderDate(time: number) {
-	var d = new Date(time);
-	var dateString = `${d.getFullYear()}.${d.getMonth()}.${d.getDate()}`;
-	var timeString = `${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`;
-	if (d.getMilliseconds() != 0) {
-		timeString += `.${d.getMilliseconds()}`;
+	var d = moment(time);
+	var format = "YYYY.MM.DD HH:mm:ss";
+	if (d.milliseconds() > 0) {
+		format += ".SSS";
 	}
-	return `${dateString} ${timeString}`;
+	return d.format(format);
 }
 
-function getDetectedUnixtime(text: string) {
+function getDetectedUnixtime(text: string): Promise<string> {
 	text = text.replace(/[^0-9]+/g, '');
 	var parsedNumber = Number(text);
 	if (!isNaN(parsedNumber)) {
@@ -29,5 +31,7 @@ function getDetectedUnixtime(text: string) {
 			return Promise.resolve(`Unixtime: ${renderDate(parsedNumber)}`);
 		}
 	}
-	return Promise.reject(null);
+	return Promise.reject<string>(null);
 }
+
+export = getDetectedUnixtime;

@@ -1,9 +1,9 @@
 /// <reference path="../typings/es6-promise/es6-promise.d.ts" />
 
-/// <reference path="handlers/unixtime.ts" />
-/// <reference path="handlers/twogis.ts" />
-/// <reference path="utils/promise.ts" />
-/// <reference path="tipManager.ts" />
+import getDetectedUnixtime = require('./handlers/unixtime');
+import getTwoGisObject = require('./handlers/twogis');
+import pu = require('./utils/promise');
+import TipManager = require('./ui/tipManager');
 
 var handlers: Array<(text: string) => Promise<string>> = [
 	getDetectedUnixtime,
@@ -12,11 +12,15 @@ var handlers: Array<(text: string) => Promise<string>> = [
 
 var tipManager = new TipManager("__chrome_extension_webapi_tools_tip");
 
+function applyHandlers(text: string) {
+	return pu.getResolvedPromises(handlers.map((_) => _(text)));
+}
+
 function onSelectionChange() {
 	var selection = window.getSelection();
 	var selectedText = selection.toString();
 	if (selection.rangeCount == 1 && selectedText.length > 0) {
-		getResolvedPromises(handlers.map((_) => _(selectedText)))
+		applyHandlers(selectedText)
 			.then((tips) => {
 				if (tips.length) {
 					tipManager.show(
