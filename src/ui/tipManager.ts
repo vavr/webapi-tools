@@ -24,7 +24,7 @@ class TipManager {
 	
 	show(text: string, nearRect: ClientRect) {
 		var tip = this.getElement();
-		tip.innerText = text;
+		tip.innerHTML = text;
 		tip.style.display = "inline-block";
 		tip.style.top = (nearRect.top + window.pageYOffset).toString() + "px";
 		tip.style.left = (nearRect.right + window.pageXOffset + 10).toString() + "px";

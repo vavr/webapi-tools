@@ -24,7 +24,7 @@ function onSelectionChange() {
 			.then((tips) => {
 				if (tips.length) {
 					tipManager.show(
-						tips.join(","),
+						tips.join("<br />"),
 						selection.getRangeAt(0).getBoundingClientRect()
 					);
 				} else {
