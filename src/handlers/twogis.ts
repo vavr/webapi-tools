@@ -3,7 +3,7 @@
 
 import pu = require('../utils/promise');
 
-const API_KEY = "rugalt6554";
+const API_KEY = "2GIS_API_KEY";
 const API_URL = "http://catalog.api.2gis.ru";
 
 if (API_KEY == "nospecified") {
