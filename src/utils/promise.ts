@@ -12,7 +12,7 @@ export function promiseMap<A, B>(promise: Promise<A>, callback: (x: A) => B): Pr
 }
 
 
-export function getResolvedPromises<T>(promises: Promise<T>[]) {
+export function getResolvedPromises<T>(promises: Promise<T>[], rejectEmpty: boolean) {
 	return new Promise<T[]>((resolve, reject) => {
 		var resolved: T[] = [];
 		
@@ -21,7 +21,11 @@ export function getResolvedPromises<T>(promises: Promise<T>[]) {
 		function checkComplete() {
 			completed++;
 			if (completed == total) {
-				resolve(resolved);
+				if (resolved.length || !rejectEmpty) {
+					resolve(resolved);
+				} else {
+					reject();
+				}
 			}
 		}
 		

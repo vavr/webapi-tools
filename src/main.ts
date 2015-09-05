@@ -16,25 +16,22 @@ var handlers: Array<(text: string) => Promise<string>> = [
 var tipManager = new TipManager("__chrome_extension_webapi_tools_tip");
 
 function applyHandlers(text: string) {
-	return pu.getResolvedPromises(handlers.map((_) => _(text)));
+	return pu.getResolvedPromises(handlers.map((_) => _(text)), true);
 }
 
 function onSelectionChange() {
 	var selection = window.getSelection();
 	var selectedText = selection.toString();
 	if (selection.rangeCount == 1 && selectedText.length > 0) {
-		applyHandlers(selectedText)
-			.then((tips) => {
-				if (tips.length) {
-					tipManager.show(
-						tips.join("<br />"),
-						selection.getRangeAt(0).getBoundingClientRect()
-					);
-				} else {
-					tipManager.hide();
-				}
+		applyHandlers(selectedText).then(
+			(tips) => {
+				tipManager.show(
+					tips.join("<br />"),
+					selection.getRangeAt(0).getBoundingClientRect()
+				);
 			},
-			tipManager.hide);
+			tipManager.hide
+		);
 	} else {
 		tipManager.hide();
 	}
