@@ -4,7 +4,7 @@ import pu = require('../utils/promise');
 import ui = require('../ui/helper');
 
 const API_KEY = "2GIS_API_KEY"; // replaced by gulp
-const API_URL = "http://catalog.api.2gis.ru";
+const API_URL = "//catalog.api.2gis.ru";
 
 if (API_KEY == "2GIS" + "_API_KEY") {
 	console.error("2GIS api key not specified");
