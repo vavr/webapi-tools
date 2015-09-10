@@ -134,10 +134,10 @@ function rubricGet(id: string): Promise<Rubric> {
 }
 
 function getTwoGisFilial(text: string): Promise<string> {
-	var filialId = Number(text);
-	if (!isNaN(filialId) && isLikeFilialId(filialId)) {
+	var asNumber = Number(text);
+	if (!isNaN(asNumber) && isLikeFilialId(asNumber)) {
 		return pu.promiseMap(
-			branchGet(filialId.toString()), 
+			branchGet(text), 
 			(filial: Filial) => `Filial: ${filial}`
 		);
 	}
@@ -145,10 +145,10 @@ function getTwoGisFilial(text: string): Promise<string> {
 }
 
 function getTwoGisRubric(text: string): Promise<string> {
-	var rubricId = Number(text);
-	if (!isNaN(rubricId) && isLikeRubricId(rubricId)) {
+	var asNumber = Number(text);
+	if (!isNaN(asNumber) && isLikeRubricId(asNumber)) {
 		return pu.promiseMap(
-			rubricGet(rubricId.toString()), 
+			rubricGet(text), 
 			(rubric: Rubric) => `Rubric: ${rubric}`
 		);
 	}
