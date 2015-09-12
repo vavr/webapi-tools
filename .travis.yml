@@ -3,7 +3,9 @@ node_js:
   - stable
 before_install:
   - npm install -g gulp
+  - npm install -g tsd
 install:
   - npm install
+  - tsd install
 script:
   - gulp build pack --dgis-key rugalt6554
