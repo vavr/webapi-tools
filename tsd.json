@@ -13,6 +13,12 @@
     },
     "chrome/chrome.d.ts": {
       "commit": "7c228c09302f51d19b6b93fcfc5decaf8e8bbaa2"
+    },
+    "moment/moment.d.ts": {
+      "commit": "7a3ca1f0b8a0960af9fc1838f3234cc9d6ce0645"
+    },
+    "moment/moment-node.d.ts": {
+      "commit": "7a3ca1f0b8a0960af9fc1838f3234cc9d6ce0645"
     }
   }
 }
