@@ -14,6 +14,7 @@
     "gulp-sourcemaps": "^1.5.1",
     "gulp-tslint": "^1.4.4",
     "gulp-typescript": "^2.5.0",
+    "gulp-zip": "^3.0.2",
     "moment": "2.8.*",
     "tsify": "^0.11.11",
     "vinyl-source-stream": "^1.1.0",
