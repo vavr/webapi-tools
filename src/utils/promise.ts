@@ -66,3 +66,9 @@ export function positiveRace<T>(promises: Promise<T>[]) {
 		})
 	})
 }
+
+export function reject<T>(error: any = null): Promise<T> {
+	return new Promise<T>((resolve, reject) => {
+		reject(error);
+	});
+}

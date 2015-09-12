@@ -2,6 +2,7 @@
 /// <reference path="../../typings/moment/moment.d.ts" />
 
 import moment = require('moment');
+import pu = require('../utils/promise');
 
 var minDate = (new Date(2000, 1, 1, 0, 0, 0, 0)).valueOf();
 var maxDate = (new Date(2030, 1, 1, 0, 0, 0, 0)).valueOf();
@@ -31,7 +32,7 @@ function getDetectedUnixtime(text: string): Promise<string> {
 			return Promise.resolve(`Unixtime: ${renderDate(parsedNumber)}`);
 		}
 	}
-	return Promise.reject<string>(null);
+	return pu.reject<string>();
 }
 
 export = getDetectedUnixtime;

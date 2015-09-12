@@ -37,7 +37,7 @@ function getIPInfo(text: string): Promise<string> {
 			}
 		);
 	} else {
-		return Promise.reject<string>("it is not an IP");
+		return pu.reject<string>("it is not an IP");
 	}
 }
 

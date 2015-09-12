@@ -141,7 +141,7 @@ function getTwoGisFilial(text: string): Promise<string> {
 			(filial: Filial) => `Filial: ${filial}`
 		);
 	}
-	return Promise.reject<string>(new Error("is not filial"));
+	return pu.reject<string>(new Error("is not filial"));
 }
 
 function getTwoGisRubric(text: string): Promise<string> {
@@ -152,7 +152,7 @@ function getTwoGisRubric(text: string): Promise<string> {
 			(rubric: Rubric) => `Rubric: ${rubric}`
 		);
 	}
-	return Promise.reject<string>(new Error("is not rubric"));
+	return pu.reject<string>(new Error("is not rubric"));
 }
 
 function getTwoGisObject(text: string) {
