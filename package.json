@@ -1,6 +1,6 @@
 {
   "name": "webapi-tools",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "devDependencies": {
     "browserify": "^11.0.1",
     "gulp": "^3.8.11",

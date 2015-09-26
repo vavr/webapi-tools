@@ -30,7 +30,7 @@ function onSelectionChange() {
 					selection.getRangeAt(0).getBoundingClientRect()
 				);
 			},
-			tipManager.hide
+			() => tipManager.hide()
 		);
 	} else {
 		tipManager.hide();
