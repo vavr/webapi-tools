@@ -8,3 +8,7 @@
 	padding: 5px;
 	display: none;
 }
+
+#__chrome_extension_webapi_tools_tip iframe {
+	border: 0;
+}

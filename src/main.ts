@@ -3,6 +3,7 @@
 import getDetectedUnixtime = require('./handlers/unixtime');
 import getTwoGisObject = require('./handlers/twogis');
 import getGeoIPInfo = require('./handlers/geoip');
+import getWktFeatureMap = require('./handlers/wkt');
 
 import pu = require('./utils/promise');
 import TipManager = require('./ui/tipManager');
@@ -10,7 +11,8 @@ import TipManager = require('./ui/tipManager');
 var handlers: Array<(text: string) => Promise<string>> = [
 	getDetectedUnixtime,
 	getTwoGisObject,
-	getGeoIPInfo
+	getGeoIPInfo,
+	getWktFeatureMap
 ];
 
 var tipManager = new TipManager("__chrome_extension_webapi_tools_tip");
@@ -41,12 +43,12 @@ function isArrowKeyCode(keyCode: number) {
 	return keyCode >= 37 && keyCode <= 40;
 }
 
-document.addEventListener("keyup", (ev) => {
+document.addEventListener("keyup", (ev: KeyboardEvent) => {
 	if (ev.shiftKey && isArrowKeyCode(ev.keyCode)) {
 		onSelectionChange();
 	}
 });
 
-document.addEventListener("mouseup", (ev) => {
+document.addEventListener("mouseup", (ev: MouseEvent) => {
 	onSelectionChange();
 });

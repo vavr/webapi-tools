@@ -27,7 +27,11 @@ class TipManager {
 		tip.innerHTML = text;
 		tip.style.display = "inline-block";
 		tip.style.top = (nearRect.top + window.pageYOffset).toString() + "px";
-		tip.style.left = (nearRect.right + window.pageXOffset + 10).toString() + "px";
+		var leftOffset = (nearRect.right + window.pageXOffset + 10);
+		if (leftOffset > screen.availWidth - 400) {
+			leftOffset -= 400;
+		}
+        tip.style.left = leftOffset.toString() + "px";
 	}
 	
 	hide() {
