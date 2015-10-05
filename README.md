@@ -1,5 +1,6 @@
 # webapi-tools
 WebAPI Chrome Helper
+https://chrome.google.com/webstore/detail/webapi-tools/oimffopcffondalakocgbfbaceienohp
 
 ## dev
 `npm install -g gulp` сборщик
