@@ -4,6 +4,7 @@ import getDetectedUnixtime = require('./handlers/unixtime');
 import getTwoGisObject = require('./handlers/twogis');
 import getGeoIPInfo = require('./handlers/geoip');
 import getWktFeatureMap = require('./handlers/wkt');
+import getTwoGisHashInfo = require('./handlers/dghash');
 
 import pu = require('./utils/promise');
 import TipManager = require('./ui/tipManager');
@@ -12,7 +13,8 @@ var handlers: Array<(text: string) => Promise<string>> = [
 	getDetectedUnixtime,
 	getTwoGisObject,
 	getGeoIPInfo,
-	getWktFeatureMap
+	getWktFeatureMap,
+	getTwoGisHashInfo
 ];
 
 var tipManager = new TipManager("__chrome_extension_webapi_tools_tip");

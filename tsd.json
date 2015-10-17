@@ -8,9 +8,6 @@
     "webrtc/MediaStream.d.ts": {
       "commit": "7c228c09302f51d19b6b93fcfc5decaf8e8bbaa2"
     },
-    "es6-promise/es6-promise.d.ts": {
-      "commit": "7c228c09302f51d19b6b93fcfc5decaf8e8bbaa2"
-    },
     "chrome/chrome.d.ts": {
       "commit": "7c228c09302f51d19b6b93fcfc5decaf8e8bbaa2"
     },
@@ -19,6 +16,12 @@
     },
     "moment/moment-node.d.ts": {
       "commit": "7a3ca1f0b8a0960af9fc1838f3234cc9d6ce0645"
+    },
+    "es6-promise/es6-promise.d.ts": {
+      "commit": "af5b8275d1f2b92738b93fddabc461fc20c553a1"
+    },
+    "es6-collections/es6-collections.d.ts": {
+      "commit": "af5b8275d1f2b92738b93fddabc461fc20c553a1"
     }
   }
 }
