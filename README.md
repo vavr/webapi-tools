@@ -11,4 +11,6 @@ https://chrome.google.com/webstore/detail/webapi-tools/oimffopcffondalakocgbfbac
 
 `tsd install` скачивание TypeScript Definitions (заголовки для статической типизации для JS-библиотек)
 
-`gulp --dgis-key apikey` сборка
+`gulp build --dgis-key apikey` сборка
+
+`gulp pack` упаковка расширения

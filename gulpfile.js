@@ -26,7 +26,7 @@ gulp.task('build', function() {
 });
  
 gulp.task('pack', function () {
-    return gulp.src(['build/*', 'static/*', 'manifest.json'])
+    return gulp.src(['build/*', 'static/*', 'manifest.json'], {base: '.'})
         .pipe(zip('extension.zip'))
         .pipe(gulp.dest('./'));
 });

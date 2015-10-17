@@ -8,4 +8,5 @@ install:
   - npm install
   - tsd install
 script:
-  - gulp build pack --dgis-key rugalt6554
+  - gulp build --dgis-key rugalt6554
+  - gulp pack

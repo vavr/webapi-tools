@@ -1,3 +1,5 @@
+.idea/
 node_modules/
 typings/
 build/
+extension.zip
