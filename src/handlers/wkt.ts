@@ -9,7 +9,7 @@ function isWkt(text: string) {
 }
 
 function getWktMap(text: string): Promise<string> {
-    var detected;
+    var detected: string[];
     if (detected = isWkt(text)) {
         var url = `http://klpx.github.io/wktmap/inline.html#${detected[0]}`;
         return Promise.resolve(`<iframe src="${url}" width="350" height="250"/>`)
