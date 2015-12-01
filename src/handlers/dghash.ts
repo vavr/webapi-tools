@@ -39,21 +39,36 @@ function formatHashInfo(i: IHashInfo) {
     return `base: ${i.baseHash}${formattedParams}`;
 }
 
+function getHashInfoUrl(serviceHost: string, hash: string) {
+    return `http://${serviceHost}/hash?hash=${hash}&format=json`;
+}
+
+var DEFAULT_SERVICE_HOST = 'service.api.n1.nato';
+
 function getDGisHashInfo(text: string): Promise<string> {
-    var matches = text.match(/(\d+)(_([\w\.]+))?/);
+    var matches = text.match(/([\w\\\/]{30,})/);
 
     if (matches) {
-        var id = matches[1],
-            hash = matches[3];
+        var hash = matches[1];
 
-        if (hash) {
-            var hashInfoUrl = `http://service.api.n1.nato/hash?hash=${hash}&format=json`;
-            return pu.promiseMap(request(hashInfoUrl), (result: HashDecodeResult) => {
-                return formatHashInfo(result[0]);
-            })
+        var hashInfoPromise: Promise<any>;
+        var catalogMatch: RegExpMatchArray;
+        if (catalogMatch = location.hostname.match('/^catalog\.(.+)/')) {
+            hashInfoPromise = pu.positiveRace([
+                request(getHashInfoUrl(DEFAULT_SERVICE_HOST, hash)),
+                request(getHashInfoUrl('service.' + catalogMatch[1], hash))
+            ])
         } else {
-            return getTwoGisObject(id);
+            hashInfoPromise = request(getHashInfoUrl(DEFAULT_SERVICE_HOST, hash))
         }
+
+        return pu.promiseMap(
+            pu.filter(
+                hashInfoPromise,
+                (result: HashDecodeResult) => result[0] && Object.keys(result[0].params).length > 0
+            ),
+            (result: HashDecodeResult) => formatHashInfo(result[0])
+        )
     } else {
         return pu.reject("no dgis id")
     }

@@ -72,3 +72,20 @@ export function reject<T>(error: any = null): Promise<T> {
 		reject(error);
 	});
 }
+
+export function filter<T>(promise: Promise<T>, predicate: (x: T) => Boolean): Promise<T> {
+	return new Promise<T>((resolve, reject) => {
+		promise.then(
+			(x: T) => {
+				if (predicate(x)) {
+					resolve(x)
+				} else {
+					reject("filtered")
+				}
+			},
+			(err) => {
+				reject(err)
+			}
+		);
+	});
+}
