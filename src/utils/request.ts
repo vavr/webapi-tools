@@ -7,7 +7,11 @@ function buildParamString(params: any) {
 function request(url: string, params: any = {}) {
 	return new Promise<any>((resolve, reject) => {
 		var xhr = new XMLHttpRequest();
-		xhr.open('GET', `${url}?${buildParamString(params)}`, true);
+		var queryString = buildParamString(params);
+		if (queryString.length > 0) {
+			queryString = '?' + queryString;
+		}
+		xhr.open('GET', url + queryString, true);
 		xhr.onreadystatechange = (ev) => {
 			if(xhr.readyState == xhr.DONE) {
 				if (xhr.status == 200) {

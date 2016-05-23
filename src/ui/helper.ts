@@ -2,8 +2,6 @@
 
 export function getExternalLinkCode(link: string) {
 	return `
-		<a href="${link}" target="_blank">
-			<img src="${chrome.extension.getURL('static/link.png')}" />
-		</a>
+		<a href="${link}" target="_blank"><img src="${chrome.extension.getURL('static/link.png')}" /></a>
 	`;
 }
