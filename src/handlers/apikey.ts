@@ -27,7 +27,7 @@ function getApiKeyInfoURLById(serviceHost: string, id: number) {
     return `http://${serviceHost}/apiUsers/default/view?id=${id}`;
 }
 
-var DEFAULT_SERVICE_HOST = 'service.api.n1.nato';
+var DEFAULT_SERVICE_HOST = 'service.api.m1.nato';
 
 function getApiKeyInfo(text: string): Promise<string> {
     var matches = text.match(/(ru[a-z]{4}[0-9]{4})/);
