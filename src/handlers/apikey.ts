@@ -27,7 +27,7 @@ function getApiKeyInfoURLById(serviceHost: string, id: number) {
     return `https://${serviceHost}/apiUsers/default/view?id=${id}`;
 }
 
-var DEFAULT_SERVICE_HOST = 'service.api.2gis.ru';
+var DEFAULT_SERVICE_HOST = 'service-m1.api.2gis.ru';
 
 function getApiKeyInfo(text: string): Promise<string> {
     var matches = text.match(/(ru[a-z]{4}[0-9]{4})/);
