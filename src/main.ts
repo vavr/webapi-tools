@@ -6,12 +6,14 @@ import getGeoIPInfo = require('./handlers/geoip');
 import getWktFeatureMap = require('./handlers/wkt');
 import getTwoGisHashInfo = require('./handlers/dghash');
 import getApiKeyInfo = require('./handlers/apikey');
+import getRequestId = require('./handlers/requestid');
 
 import pu = require('./utils/promise');
 import TipManager = require('./ui/tipManager');
 
 var handlers: Array<(text: string) => Promise<string>> = [
 	getDetectedUnixtime,
+	getRequestId,
 	getTwoGisObject,
 	getGeoIPInfo,
 	getWktFeatureMap,
