@@ -12,10 +12,12 @@ if (API_KEY == "2GIS" + "_API_KEY") {
 
 class Entity {
 	id: string;
+	entityType: string;
 	apiLink: string;
 	
-	constructor(id: string, apiLink: string) {
+	constructor(id: string, type: string, apiLink: string) {
 		this.id = id;
+		this.entityType = type;
 		this.apiLink = apiLink;
 	}
 	
@@ -24,18 +26,18 @@ class Entity {
 	}
 }
 
-class Filial extends Entity {
+class ApiObject extends Entity {
 	name: string;
 	projectId: number;
 	
-	constructor(id: string, name: string, projectId: number, apiLink: string) {
-		super(id, apiLink);
+	constructor(id: string, type: string, name: string, projectId: number, apiLink: string) {
+		super(id, type, apiLink);
 		this.name = name;
 		this.projectId = projectId;
 	}
 	
 	toString() {
-		return `${this.name}, pj. ${this.projectId} ${this.getExternalLinkHtml()}`;
+		return `${this.entityType} ${this.name}, pj. ${this.projectId} ${this.getExternalLinkHtml()}`;
 	}
 }
 
@@ -44,13 +46,13 @@ class Rubric extends Entity {
 	projectId: number;
 	
 	constructor(id: string, name: string, projectId: number, apiLink: string) {
-		super(id, apiLink);
+		super(id, `rubric`, apiLink);
 		this.name = name;
 		this.projectId = projectId;
 	}
 	
 	toString() {
-		return `${this.name}, pj. ${this.projectId} ${this.getExternalLinkHtml()}`;
+		return `${this.entityType} ${this.name}, pj. ${this.projectId} ${this.getExternalLinkHtml()}`;
 	}
 }
 
@@ -64,12 +66,12 @@ class ApiResult {
 	}
 }
 
-function isLikeFilialId(n: number) {
+function isLikeApiObjectId(n: number) {
 	return (n >> 32) > 0;
 }
 
 function isLikeRubricId(n: number) {
-	return isLikeFilialId(n);
+	return n > 0;
 }
 
 function buildParamString(params: any) {
@@ -79,10 +81,10 @@ function buildParamString(params: any) {
 function callTwoGisAPI(method: string, params: any): Promise<ApiResult> {
 	return new Promise<ApiResult>((resolve, reject) => {
 		params.key = API_KEY;
-		var requestUrl = `${API_URL}/2.0/${method}?key=${API_KEY}&${buildParamString(params)}`
+		var requestUrl = `${API_URL}/${method}?${buildParamString(params)}`
 		var xhr = new XMLHttpRequest();
 		xhr.open('GET',
-			`${API_URL}/2.0/${method}?${buildParamString(params)}`,
+			requestUrl,
 			true
 		);
 		xhr.onreadystatechange = (ev) => {
@@ -105,13 +107,13 @@ function callTwoGisAPI(method: string, params: any): Promise<ApiResult> {
 	})
 }
 
-function branchGet(id: string): Promise<Filial> {
-	return new Promise<Filial>((resolve, reject) => {
-		callTwoGisAPI("catalog/branch/get", {id: id, fields: 'items.region_id'})
+function apiObjectGet(id: string): Promise<ApiObject> {
+	return new Promise<ApiObject>((resolve, reject) => {
+		callTwoGisAPI("3.0/items/byid", {id: id, fields: 'items.region_id'})
 			.then((resp) => {
 				if (resp.data.result.total > 0) {
-					var filial = resp.data.result.items[0];
-					resolve(new Filial(filial.id, filial.name, filial.region_id, resp.url));
+					var apiObj = resp.data.result.items[0];
+					resolve(new ApiObject(apiObj.id, apiObj.type, apiObj.name, apiObj.region_id, resp.url));
 				} else {
 					reject();
 				}
@@ -121,11 +123,11 @@ function branchGet(id: string): Promise<Filial> {
 
 function rubricGet(id: string): Promise<Rubric> {
 	return new Promise<Rubric>((resolve, reject) => {
-		callTwoGisAPI("catalog/rubric/get", {id: id, fields: '*'})
+		callTwoGisAPI("2.0/catalog/rubric/get", {id: id, region_id: 1})
 			.then((resp) => {
 				if (resp.data.result.total > 0) {
 					var rubric = resp.data.result.items[0];
-					resolve(new Rubric(rubric.id, rubric.name, rubric.region_id, resp.url));
+					resolve(new Rubric(rubric.id, rubric.name, 1, resp.url));
 				} else {
 					reject();
 				}
@@ -133,12 +135,12 @@ function rubricGet(id: string): Promise<Rubric> {
 	})
 }
 
-function getTwoGisFilial(text: string): Promise<string> {
+function getTwoGisApiObject(text: string): Promise<string> {
 	var asNumber = Number(text);
-	if (!isNaN(asNumber) && isLikeFilialId(asNumber)) {
+	if (!isNaN(asNumber) && isLikeApiObjectId(asNumber)) {
 		return pu.promiseMap(
-			branchGet(text), 
-			(filial: Filial) => `Filial: ${filial}`
+			apiObjectGet(text),
+			(apiObject: ApiObject) => apiObject.toString()
 		);
 	}
 	return pu.reject<string>(new Error("is not filial"));
@@ -149,14 +151,14 @@ function getTwoGisRubric(text: string): Promise<string> {
 	if (!isNaN(asNumber) && isLikeRubricId(asNumber)) {
 		return pu.promiseMap(
 			rubricGet(text), 
-			(rubric: Rubric) => `Rubric: ${rubric}`
+			(rubric: Rubric) => rubric.toString()
 		);
 	}
 	return pu.reject<string>(new Error("is not rubric"));
 }
 
 function getTwoGisObject(text: string) {
-	return pu.positiveRace([getTwoGisFilial(text), getTwoGisRubric(text)]);
+	return pu.positiveRace([getTwoGisApiObject(text), getTwoGisRubric(text)]);
 }
 
 export = getTwoGisObject;

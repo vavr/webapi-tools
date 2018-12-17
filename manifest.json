@@ -3,7 +3,7 @@
 
   "name": "WebAPI Tools",
   "description": "В помощь разработчикам 2GIS",
-  "version": "1.4.0",
+  "version": "1.4.1",
 
   "content_scripts": [
     {
