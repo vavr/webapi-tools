@@ -40,10 +40,10 @@ function formatHashInfo(i: IHashInfo) {
 }
 
 function getHashInfoUrl(serviceHost: string, hash: string) {
-    return `http://${serviceHost}/hash?hash=${hash}&format=json`;
+    return `https://${serviceHost}/hash?hash=${hash}&format=json`;
 }
 
-var DEFAULT_SERVICE_HOST = 'service.api.n1.nato';
+var DEFAULT_SERVICE_HOST = 'service.api.2gis.ru';
 
 function getDGisHashInfo(text: string): Promise<string> {
     var matches = text.match(/([\w\\\/]{30,})/);

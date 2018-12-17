@@ -20,14 +20,14 @@ function formatApiKeyInfo(i: IApiKeyInfo, link: string) {
 }
 
 function getApiKeyInfoURL(serviceHost: string, key: string) {
-    return `http://${serviceHost}/apiUsers/default/info?key=${key}`;
+    return `https://${serviceHost}/apiUsers/default/info?key=${key}`;
 }
 
 function getApiKeyInfoURLById(serviceHost: string, id: number) {
-    return `http://${serviceHost}/apiUsers/default/view?id=${id}`;
+    return `https://${serviceHost}/apiUsers/default/view?id=${id}`;
 }
 
-var DEFAULT_SERVICE_HOST = 'service.api.m1.nato';
+var DEFAULT_SERVICE_HOST = 'service-m1.api.2gis.ru';
 
 function getApiKeyInfo(text: string): Promise<string> {
     var matches = text.match(/(ru[a-z]{4}[0-9]{4})/);
