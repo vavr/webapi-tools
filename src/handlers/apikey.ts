@@ -36,15 +36,8 @@ function getApiKeyInfo(text: string): Promise<string> {
         var key = matches[1];
 
         var apiKeyInfoPromise: Promise<any>;
-        var catalogMatch: RegExpMatchArray;
-        if (catalogMatch = location.hostname.match('/^catalog\.(.+)/')) {
-            apiKeyInfoPromise = pu.positiveRace([
-                request(getApiKeyInfoURL(DEFAULT_SERVICE_HOST, key)),
-                request(getApiKeyInfoURL('service.' + catalogMatch[1], key))
-            ])
-        } else {
-            apiKeyInfoPromise = request(getApiKeyInfoURL(DEFAULT_SERVICE_HOST, key))
-        }
+
+        apiKeyInfoPromise = request(getApiKeyInfoURL(DEFAULT_SERVICE_HOST, key));
 
         return pu.promiseMap(
             pu.filter(

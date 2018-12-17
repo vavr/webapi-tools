@@ -43,7 +43,7 @@ function getHashInfoUrl(serviceHost: string, hash: string) {
     return `https://${serviceHost}/hash?hash=${hash}&format=json`;
 }
 
-var DEFAULT_SERVICE_HOST = 'service.api.2gis.ru';
+var DEFAULT_SERVICE_HOST = 'service-m1.api.2gis.ru';
 
 function getDGisHashInfo(text: string): Promise<string> {
     var matches = text.match(/([\w\\\/]{30,})/);
@@ -52,15 +52,8 @@ function getDGisHashInfo(text: string): Promise<string> {
         var hash = matches[1];
 
         var hashInfoPromise: Promise<any>;
-        var catalogMatch: RegExpMatchArray;
-        if (catalogMatch = location.hostname.match('/^catalog\.(.+)/')) {
-            hashInfoPromise = pu.positiveRace([
-                request(getHashInfoUrl(DEFAULT_SERVICE_HOST, hash)),
-                request(getHashInfoUrl('service.' + catalogMatch[1], hash))
-            ])
-        } else {
-            hashInfoPromise = request(getHashInfoUrl(DEFAULT_SERVICE_HOST, hash))
-        }
+
+        hashInfoPromise = request(getHashInfoUrl(DEFAULT_SERVICE_HOST, hash));
 
         return pu.promiseMap(
             pu.filter(
