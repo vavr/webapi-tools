@@ -28,7 +28,7 @@ function isIP(text: string) {
 
 function getIPInfo(text: string): Promise<string> {
 	if (isIP(text)) {
-		var url = `https://freegeoip.net/json/${text}`;
+		var url = `http://api.ipstack.com/${text}?access_key=3daacca1d7bce16e5e0eb3e2c35afce7`;
 		return pu.promiseMap(
 			request(url),
 			(resp) => {
